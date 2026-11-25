@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Warehouse Inventory Optimizer — compare four algorithms for selecting inventory under a storage capacity limit.">
+  <title>Stockroom — Warehouse Inventory Optimizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Stockroom home">
+      <img src="assets/logo.jpg" class="brand-logo" alt="Stockroom Logo">
+    <span class="brand-name">Stockroom</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#home" class="nav-link active">Overview</a>
+      <a href="#optimizer" class="nav-link">Optimizer</a>
+      <a href="#algorithms" class="nav-link">Algorithms</a>
+      <a href="#comparison" class="nav-link">Compare</a>
+    </nav>
+    <div class="top-actions">
+      <span class="theme-label">APPEARANCE</span>
+      <select id="themeSelect" class="theme-select" aria-label="Choose appearance">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      <a class="top-cta" href="#optimizer">Start optimizing <span>↗</span></a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+  </header>
+
+  <main>
+    <section class="hero section-wrap" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> INVENTORY INTELLIGENCE / 01</p>
+        <h1>Make every<br>warehouse <em>count.</em></h1>
+        <p class="hero-lead">A practical algorithm explorer for smarter stock selection. Find the most valuable combination of products without exceeding your warehouse capacity.</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#optimizer">Explore the optimizer <span>↗</span></a>
+          <a class="text-link" href="#algorithms">Understand the algorithms <span>↓</span></a>
+        </div>
+        <div class="hero-stats">
+          <div><strong>04</strong><span>ALGORITHMS</span></div>
+          <div><strong>01</strong><span>SHARED PROBLEM</span></div>
+          <div><strong>∞</strong><span>WAYS TO TEST</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1500&q=85" alt="Warehouse shelves with colorful inventory boxes and storage racks">
+        <div class="image-caption"><span class="caption-dot"></span> REAL-WORLD WAREHOUSE / STOCK MANAGEMENT</div>
+        <div class="hero-sticker"><span>SMART</span><b>STOCK<br>DECISIONS</b><small>LESS WASTE. MORE VALUE.</small></div>
+      </div>
+    </section>
+
+    <section class="intro-strip section-wrap">
+      <div class="strip-heading">THE CHALLENGE</div>
+      <p>A warehouse has limited space. Which products should it store to achieve the highest total inventory value? This is a version of the <strong>0/1 Knapsack Problem</strong> — a classic optimization problem with real applications in stock planning, logistics and resource allocation.</p>
+      <div class="strip-image"><img src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=600&q=80" alt="Colorful warehouse storage shelves"></div>
+    </section>
+
+    <section class="optimizer-section section-wrap" id="optimizer">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> WORKSPACE / 02</p><h2>Set your inventory.</h2></div>
+        <p>Enter a storage limit and the products you want to consider. All four approaches will use this exact same dataset.</p>
+      </div>
+      <div class="workspace-grid">
+        <div class="form-panel panel">
+          <div class="panel-title"><div><span class="step-number">01</span><h3>Warehouse capacity</h3></div><span class="small-tag">INPUT</span></div>
+          <label for="capacity">Maximum storage capacity <span>(weight units)</span></label>
+          <div class="capacity-input"><input id="capacity" type="number" min="1" max="10000" value="15"><span>UNITS</span></div>
+          <div class="panel-title products-title"><div><span class="step-number">02</span><h3>Products to consider</h3></div><button id="addProduct" class="small-outline" type="button">＋ Add product</button></div>
+          <p class="helper-text">Weight is the storage space used. Value is the inventory priority/value score.</p>
+          <div class="product-table-wrap">
+            <table class="product-table">
+              <thead><tr><th>PRODUCT</th><th>WEIGHT</th><th>VALUE</th><th></th></tr></thead>
+              <tbody id="productRows"></tbody>
+            </table>
+          </div>
+          <div class="form-footer"><button id="loadSample" class="text-button" type="button">↻ Load sample data</button><button id="runAll" class="button button-dark" type="button">Run all algorithms <span>↗</span></button></div>
+          <p id="validationMessage" class="validation" role="status" aria-live="polite"></p>
+        </div>
+        <aside class="context-panel">
+          <div class="context-image"><img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=900&q=85" alt="Forklift moving colorful pallets in a warehouse"></div>
+          <div class="context-card panel">
+            <p class="eyebrow">WHAT WE OPTIMIZE</p>
+            <h3>Maximum value.<br>Within the limit.</h3>
+            <div class="formula"><span>MAXIMIZE</span><strong>Σ product value</strong></div>
+            <div class="formula"><span>SUBJECT TO</span><strong>Σ product weight ≤ capacity</strong></div>
+            <p class="helper-text">Each product is either selected once or not selected. The application treats this as a 0/1 decision.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="algorithm-section section-wrap" id="algorithms">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> FOUR APPROACHES / 03</p><h2>Same problem.<br><em>Different thinking.</em></h2></div>
+        <p>Choose an approach to see its idea, steps, complexity and result. Run the optimizer first to calculate results for your input.</p>
+      </div>
+      <div class="algorithm-tabs" role="tablist" aria-label="Algorithm approaches">
+        <button class="algorithm-tab selected" data-algo="brute" role="tab" aria-selected="true"><span>01</span><b>Brute force</b><small>O(2ⁿ)</small></button>
+        <button class="algorithm-tab" data-algo="greedy" role="tab" aria-selected="false"><span>02</span><b>Greedy</b><small>O(n log n)</small></button>
+        <button class="algorithm-tab" data-algo="dp" role="tab" aria-selected="false"><span>03</span><b>Dynamic programming</b><small>O(nW)</small></button>
+        <button class="algorithm-tab" data-algo="backtracking" role="tab" aria-selected="false"><span>04</span><b>Backtracking</b><small>O(2ⁿ) worst case</small></button>
+      </div>
+      <div class="algorithm-detail panel">
+        <div class="algorithm-explanation">
+          <p class="eyebrow" id="algoKicker">APPROACH 01 / EXHAUSTIVE SEARCH</p>
+          <h3 id="algoTitle">Brute force</h3>
+          <p id="algoDescription">Try every possible combination of products, calculate its total weight and value, and keep the best valid combination.</p>
+          <ol id="algoSteps" class="steps-list"></ol>
+          <div class="complexity-row"><div><span>TIME COMPLEXITY</span><strong id="timeComplexity">O(2ⁿ)</strong></div><div><span>SPACE COMPLEXITY</span><strong id="spaceComplexity">O(n)</strong></div></div>
+        </div>
+        <div class="algorithm-result">
+          <div class="result-top"><span>YOUR RESULT</span><span class="result-status" id="resultStatus">RUN TO CALCULATE</span></div>
+          <div class="result-value" id="resultValue">—</div>
+          <p class="result-label">Maximum inventory value</p>
+          <div class="result-divider"></div>
+          <div class="result-metric"><span>Selected weight</span><strong id="resultWeight">—</strong></div>
+          <div class="result-metric"><span>Products selected</span><strong id="resultCount">—</strong></div>
+          <div class="result-metric"><span>Execution time</span><strong id="resultTime">—</strong></div>
+          <div class="selected-items"><span>SELECTED PRODUCTS</span><p id="selectedProducts">Run the algorithms to see the allocation.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="comparison-section section-wrap" id="comparison">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> RESULTS / 04</p><h2>Compare the thinking.</h2></div>
+        <p>Compare the output of all four approaches on the same input. Greedy is a fast heuristic and is not guaranteed to find the optimal answer.</p>
+      </div>
+      <div class="comparison-grid">
+        <div class="panel comparison-table-panel">
+          <div class="panel-title"><div><span class="step-number">03</span><h3>Algorithm scoreboard</h3></div><span class="small-tag">LIVE RESULTS</span></div>
+          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>APPROACH</th><th>VALUE</th><th>WEIGHT</th><th>TIME</th><th>OPTIMAL?</th></tr></thead><tbody id="comparisonRows"><tr><td colspan="5" class="empty-row">Run all algorithms to populate the comparison.</td></tr></tbody></table></div>
+        </div>
+        <div class="panel insight-panel">
+          <p class="eyebrow">KEY TAKEAWAY</p><h3 id="insightTitle">No single approach wins every trade-off.</h3><p id="insightText">Brute force and dynamic programming guarantee an optimal answer for this model. Greedy is fast but can miss the best combination. Backtracking searches systematically and prunes overweight branches.</p>
+          <div class="insight-photo"><img src="https://images.unsplash.com/photo-1565610222536-ef125c59da2e?auto=format&fit=crop&w=800&q=80" alt="Warehouse inventory boxes on industrial shelving"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section section-wrap">
+      <div class="about-image"><img src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=1200&q=85" alt="Colorful industrial warehouse storage aisle"></div>
+      <div class="about-copy"><p class="eyebrow"><span class="eyebrow-line"></span> THE PROJECT / 05</p><h2>Learn by<br>comparing.</h2><p>This educational tool demonstrates how algorithm design changes the way we solve one optimization problem. It is a simplified planning model, not a live warehouse management system.</p><a class="text-link" href="#optimizer">Test your own dataset <span>↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="footer section-wrap"><a class="brand" href="#home"><span class="brand-mark">S</span><span>STOCKROOM<span class="brand-dot">.</span></span></a><span>ALGORITHM EXPLORER / WAREHOUSE INVENTORY OPTIMIZER</span><a href="#home">BACK TO TOP ↑</a></footer>
+  <script src="script.js"></script>
+</body>
+</html>
