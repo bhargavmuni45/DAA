@@ -11,7 +11,7 @@ A responsive, browser-based Algorithm Explorer for the 0/1 Knapsack version of w
 1. Extract the ZIP file.
 2. Open the folder in VS Code.
 3. Open `index.html` with Live Server, or double-click `index.html` to open it in a browser.
-
+4.karthikvarma bhargav siva 
 ## Problem definition
 Given a set of products, each with a positive integer storage weight and a non-negative integer value, select each product zero or one time. Maximize the sum of selected product values without exceeding the warehouse's storage capacity.
 
